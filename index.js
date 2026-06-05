@@ -29,7 +29,26 @@ REGRAS NOTURNAS (22h-7h):
 
 FORMATO: resposta direta e natural. Informe ao atendente o que deve fazer ou responder. Sem rotulos ou tags.
 
-Desenvolvida por Larissa Rocha e Maria Vitoria — Conexa Saude, 2026.`;
+Desenvolvida por Larissa Rocha e Maria Oliveira — Conexa Saude, 2026.`;
+
+const BOAS_VINDAS = `Oi! Eu sou a Luna 🌙
+
+Sou a assistente de suporte PX da Conexa Saude, disponivel 24h para te ajudar durante o plantao.
+
+Me conta a situacao que voce esta enfrentando e eu te oriento com base no FAQ oficial — rapido, direto e sem complicacao.
+
+Posso ajudar com:
+- Instabilidade na plataforma
+- Agenda dos profissionais
+- Pagamentos e nota fiscal
+- Teleconsulta
+- Certificado digital
+- E muito mais!
+
+Pode falar! 💙`;
+
+// Controle de quem ja recebeu boas-vindas (em memoria)
+const boasVindasEnviadas = new Set();
 
 // ─── BUSCA NO FAQ ───────────────────────────────────────────
 async function searchFAQ(query) {
@@ -37,11 +56,8 @@ async function searchFAQ(query) {
     const url = `https://faq.conexasaude.com.br/api/v2/help_center/pt-br/articles/search.json?query=${encodeURIComponent(query)}&per_page=3`;
     const res = await fetch(url);
     const data = await res.json();
-
     if (!data.results || data.results.length === 0) return null;
-
     return data.results.map(article => {
-      // Remove HTML tags do corpo
       const body = (article.body || "")
         .replace(/<[^>]+>/g, " ")
         .replace(/\s+/g, " ")
@@ -69,16 +85,11 @@ function addToHistory(key, role, content) {
 
 // ─── GROQ + FAQ ─────────────────────────────────────────────
 async function askGroq(key, text) {
-  // Busca artigos relevantes no FAQ
   const faqContent = await searchFAQ(text);
-
-  // Monta mensagem com contexto do FAQ
   const userMessage = faqContent
     ? `PERGUNTA DO ATENDENTE: ${text}\n\nINFORMAÇÕES DO FAQ OFICIAL:\n${faqContent}`
     : text;
-
   addToHistory(key, "user", userMessage);
-
   const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
     method: "POST",
     headers: {
@@ -93,7 +104,6 @@ async function askGroq(key, text) {
       ],
     }),
   });
-
   const data = await res.json();
   if (data.error) throw new Error(data.error.message);
   const reply = data.choices?.[0]?.message?.content || "Sem resposta.";
@@ -124,7 +134,17 @@ app.event("message", async ({ event, client }) => {
   if (event.channel_type !== "im" || event.subtype || event.bot_id) return;
   const text = (event.text || "").trim();
   if (!text) return;
+
   try {
+    // Boas-vindas na primeira mensagem
+    if (!boasVindasEnviadas.has(event.channel)) {
+      boasVindasEnviadas.add(event.channel);
+      await client.chat.postMessage({
+        channel: event.channel,
+        text: BOAS_VINDAS,
+      });
+    }
+
     await client.reactions.add({ channel: event.channel, timestamp: event.ts, name: "hourglass_flowing_sand" });
     const reply = await askGroq(`dm_${event.channel}`, text);
     await client.chat.postMessage({ channel: event.channel, text: reply });
@@ -134,4 +154,4 @@ app.event("message", async ({ event, client }) => {
   }
 });
 
-(async () => { await app.start(); console.log("Luna rodando com FAQ em tempo real!"); })();
+(async () => { await app.start(); console.log("Luna rodando com boas-vindas e FAQ em tempo real!"); })();
