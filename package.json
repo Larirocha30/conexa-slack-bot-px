@@ -1,0 +1,15 @@
+{
+  "name": "conexa-slack-bot",
+  "version": "1.0.0",
+  "description": "Bot de suporte noturno Conexa Saúde",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "@slack/bolt": "^3.21.1"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
