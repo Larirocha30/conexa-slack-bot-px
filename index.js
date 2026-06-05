@@ -7,54 +7,41 @@ const app = new App({
   appToken: process.env.SLACK_APP_TOKEN,
 });
 
-const SYSTEM_PROMPT = `Você é assistente de suporte interno da Conexa Saúde para equipe noturna (22h–7h).
-
+const SYSTEM_PROMPT = `Você é assistente de suporte interno da Conexa Saúde para equipe noturna (22h-7h).
 REGRA DE HORÁRIO:
 - PODE responder se o profissional/paciente iniciou o contato
 - NÃO acionar tickets parados entre 22h e 6h
 - A partir das 6h pode contatar profissionais
-
-SISTEMAS: Zendesk (tickets), Pipefy (pagamentos/contestações), Google Planilhas (agenda), Planilha (controle financeiro — prazo 3 dias úteis)
-
+SISTEMAS: Zendesk, Pipefy, Google Planilhas, Planilha financeira (prazo 3 dias úteis)
 PROFISSIONAIS:
 - Não recebeu demonstrativo: resolver na hora
 - Pagamento não caiu: planilha, não resolve na hora
 - Contestação de valor: planilha, encaminhar financeiro
 - Problema NF Pipefy: orientar acesso e anexo na hora
 - Sem acesso Pipefy: enviar convite na hora
-- Alterar/fechar agenda: verificar formulário na Planilha de Agenda (Google Sheets), executar conforme solicitação
+- Alterar/fechar agenda: verificar formulário na Planilha de Agenda, executar
 - Encerramento de contrato: escalar supervisor
-
 PACIENTES:
 - Remarcar: resolver na hora
 - Cancelar: resolver + registrar Zendesk
 - Plano/convênio: responder ou ticket Zendesk para equipe do dia
-
 FORMATO: direto, passos numerados quando necessário.
-Finalizar sempre com uma das tags:
-✅ Resolve agora
-📋 Planilha: [o que registrar] | Prazo: 3 dias úteis
-🌙 Aguardar 6h
-⬆️ Escalar para supervisor`;
+Finalizar com: checkmark Resolve agora OU Planilha: [registrar] Prazo 3 dias úteis OU Aguardar 6h OU Escalar supervisor`;
 
 const histories = new Map();
-
 function getHistory(key) {
   if (!histories.has(key)) histories.set(key, []);
   return histories.get(key);
 }
-
 function addToHistory(key, role, content) {
-  const hist = getHistory(key);
-  hist.push({ role, content });
-  if (hist.length > 40) hist.splice(0, 2);
+  const h = getHistory(key);
+  h.push({ role, content });
+  if (h.length > 40) h.splice(0, 2);
 }
 
-async function askClaude(historyKey, userMessage) {
-  addToHistory(historyKey, "user", userMessage);
-  const history = getHistory(historyKey);
-
-  const response = await fetch("https://api.anthropic.com/v1/messages", {
+async function askClaude(key, text) {
+  addToHistory(key, "user", text);
+  const res = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -65,31 +52,45 @@ async function askClaude(historyKey, userMessage) {
       model: "claude-sonnet-4-20250514",
       max_tokens: 1000,
       system: SYSTEM_PROMPT,
-      messages: history,
+      messages: getHistory(key),
     }),
   });
-
-  const data = await response.json();
+  const data = await res.json();
   if (data.error) throw new Error(data.error.message);
-
   const reply = data.content?.[0]?.text || "Sem resposta.";
-  addToHistory(historyKey, "assistant", reply);
+  addToHistory(key, "assistant", reply);
   return reply;
-}
-
-function formatForSlack(text) {
-  return text
-    .replace(/\*\*(.*?)\*\*/g, "*$1*")
-    .replace(/(✅ Resolve agora[^\n]*)/g, "\n✅ *Resolve agora*")
-    .replace(/(📋 Planilha:[^\n]*)/g, "\n📋 $1")
-    .replace(/(🌙 Aguardar[^\n]*)/g, "\n🌙 $1")
-    .replace(/(⬆️ Escalar[^\n]*)/g, "\n⬆️ *$1*")
-    .replace(/^(\d+)\. /gm, "\n$1. ");
 }
 
 app.message(async ({ message, say, client }) => {
   if (message.subtype || message.bot_id) return;
-
-  const historyKey = message.thread_ts
+  const key = message.thread_ts
     ? `${message.channel}_${message.thread_ts}`
-    : `${message.channel}_
+    : `${message.channel}_${message.ts}`;
+  const text = (message.text || "").replace(/<@[A-Z0-9]+>/g, "").trim();
+  if (!text) return;
+  try {
+    await client.reactions.add({ channel: message.channel, timestamp: message.ts, name: "hourglass_flowing_sand" });
+    const reply = await askClaude(key, text);
+    await say({ text: reply, thread_ts: message.thread_ts || message.ts });
+    await client.reactions.remove({ channel: message.channel, timestamp: message.ts, name: "hourglass_flowing_sand" });
+  } catch (err) {
+    await say({ text: `Erro: ${err.message}`, thread_ts: message.thread_ts || message.ts });
+  }
+});
+
+app.event("message", async ({ event, client }) => {
+  if (event.channel_type !== "im" || event.subtype || event.bot_id) return;
+  const text = (event.text || "").trim();
+  if (!text) return;
+  try {
+    await client.reactions.add({ channel: event.channel, timestamp: event.ts, name: "hourglass_flowing_sand" });
+    const reply = await askClaude(`dm_${event.channel}`, text);
+    await client.chat.postMessage({ channel: event.channel, text: reply });
+    await client.reactions.remove({ channel: event.channel, timestamp: event.ts, name: "hourglass_flowing_sand" });
+  } catch (err) {
+    await client.chat.postMessage({ channel: event.channel, text: `Erro: ${err.message}` });
+  }
+});
+
+(async () => { await app.start(); console.log("Bot Conexa rodando!"); })();
