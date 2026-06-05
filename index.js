@@ -91,9 +91,7 @@ REGRAS NOTURNAS (22h-7h):
 - A partir das 6h pode contatar profissionais
 - Duvidas fora do FAQ: encaminhar para https://faq.conexasaude.com.br ou WhatsApp (21) 96696-4821
 
-FORMATO: resposta direta e objetiva, sem tags ou rotulos.
-Apenas informe ao atendente o que deve ser feito ou respondido ao profissional.
-Se nao puder resolver na hora, informe claramente o proximo passo.`;
+FORMATO: resposta curta e direta. NUNCA use as palavras "Resolve agora", "Escalar" ou qualquer rotulo em negrito. Apenas diga o que o atendente deve fazer, de forma simples e natural, como se fosse uma mensagem de colega para colega.`;
 
 const histories = new Map();
 function getHistory(key) {
