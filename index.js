@@ -1,4 +1,5 @@
 const { App } = require("@slack/bolt");
+const http = require("http");
 
 const app = new App({
   token: process.env.SLACK_BOT_TOKEN,
@@ -47,10 +48,8 @@ Posso ajudar com:
 
 Pode falar! 💙`;
 
-// Controle de quem ja recebeu boas-vindas (em memoria)
 const boasVindasEnviadas = new Set();
 
-// ─── BUSCA NO FAQ ───────────────────────────────────────────
 async function searchFAQ(query) {
   try {
     const url = `https://faq.conexasaude.com.br/api/v2/help_center/pt-br/articles/search.json?query=${encodeURIComponent(query)}&per_page=3`;
@@ -71,7 +70,6 @@ async function searchFAQ(query) {
   }
 }
 
-// ─── HISTÓRICO ──────────────────────────────────────────────
 const histories = new Map();
 function getHistory(key) {
   if (!histories.has(key)) histories.set(key, []);
@@ -83,7 +81,6 @@ function addToHistory(key, role, content) {
   if (h.length > 40) h.splice(0, 2);
 }
 
-// ─── GROQ + FAQ ─────────────────────────────────────────────
 async function askGroq(key, text) {
   const faqContent = await searchFAQ(text);
   const userMessage = faqContent
@@ -111,7 +108,6 @@ async function askGroq(key, text) {
   return reply;
 }
 
-// ─── HANDLER CANAL ──────────────────────────────────────────
 app.message(async ({ message, say, client }) => {
   if (message.subtype || message.bot_id) return;
   const key = message.thread_ts
@@ -129,14 +125,11 @@ app.message(async ({ message, say, client }) => {
   }
 });
 
-// ─── HANDLER DM ─────────────────────────────────────────────
 app.event("message", async ({ event, client }) => {
   if (event.channel_type !== "im" || event.subtype || event.bot_id) return;
   const text = (event.text || "").trim();
   if (!text) return;
-
   try {
-    // Boas-vindas na primeira mensagem
     if (!boasVindasEnviadas.has(event.channel)) {
       boasVindasEnviadas.add(event.channel);
       await client.chat.postMessage({
@@ -144,7 +137,6 @@ app.event("message", async ({ event, client }) => {
         text: BOAS_VINDAS,
       });
     }
-
     await client.reactions.add({ channel: event.channel, timestamp: event.ts, name: "hourglass_flowing_sand" });
     const reply = await askGroq(`dm_${event.channel}`, text);
     await client.chat.postMessage({ channel: event.channel, text: reply });
@@ -154,4 +146,10 @@ app.event("message", async ({ event, client }) => {
   }
 });
 
-(async () => { await app.start(); console.log("Luna rodando com boas-vindas e FAQ em tempo real!"); })();
+// Servidor HTTP para o Render nao derrubar o servico
+http.createServer((req, res) => res.end("Luna online!")).listen(process.env.PORT || 3000);
+
+(async () => {
+  await app.start();
+  console.log("Luna rodando com boas-vindas e FAQ em tempo real!");
+})();
