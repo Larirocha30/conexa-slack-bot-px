@@ -39,26 +39,25 @@ function addToHistory(key, role, content) {
   if (h.length > 40) h.splice(0, 2);
 }
 
-async function askGemini(key, text) {
+async function askGroq(key, text) {
   addToHistory(key, "user", text);
-  const history = getHistory(key);
-  const contents = history.map(m => ({
-    role: m.role === "assistant" ? "model" : "user",
-    parts: [{ text: m.content }],
-  }));
-  const res = await fetch(
-`https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
+  const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
     method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
-        contents,
-      }),
-    }
-  );
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${process.env.GROQ_API_KEY}`,
+    },
+    body: JSON.stringify({
+      model: "llama-3.3-70b-versatile",
+      messages: [
+        { role: "system", content: SYSTEM_PROMPT },
+        ...getHistory(key),
+      ],
+    }),
+  });
   const data = await res.json();
   if (data.error) throw new Error(data.error.message);
-  const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || "Sem resposta.";
+  const reply = data.choices?.[0]?.message?.content || "Sem resposta.";
   addToHistory(key, "assistant", reply);
   return reply;
 }
@@ -72,7 +71,7 @@ app.message(async ({ message, say, client }) => {
   if (!text) return;
   try {
     await client.reactions.add({ channel: message.channel, timestamp: message.ts, name: "hourglass_flowing_sand" });
-    const reply = await askGemini(key, text);
+    const reply = await askGroq(key, text);
     await say({ text: reply, thread_ts: message.thread_ts || message.ts });
     await client.reactions.remove({ channel: message.channel, timestamp: message.ts, name: "hourglass_flowing_sand" });
   } catch (err) {
@@ -86,7 +85,7 @@ app.event("message", async ({ event, client }) => {
   if (!text) return;
   try {
     await client.reactions.add({ channel: event.channel, timestamp: event.ts, name: "hourglass_flowing_sand" });
-    const reply = await askGemini(`dm_${event.channel}`, text);
+    const reply = await askGroq(`dm_${event.channel}`, text);
     await client.chat.postMessage({ channel: event.channel, text: reply });
     await client.reactions.remove({ channel: event.channel, timestamp: event.ts, name: "hourglass_flowing_sand" });
   } catch (err) {
@@ -94,4 +93,4 @@ app.event("message", async ({ event, client }) => {
   }
 });
 
-(async () => { await app.start(); console.log("Bot Conexa rodando com Gemini!"); })();
+(async () => { await app.start(); console.log("Bot Conexa rodando com Groq!"); })();
