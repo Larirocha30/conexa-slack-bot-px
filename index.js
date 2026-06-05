@@ -26,7 +26,7 @@ PACIENTES:
 - Cancelar: resolver + registrar Zendesk
 - Plano/convênio: responder ou ticket Zendesk para equipe do dia
 FORMATO: direto, passos numerados quando necessário.
-Finalizar com: checkmark Resolve agora OU Planilha: [registrar] Prazo 3 dias úteis OU Aguardar 6h OU Escalar supervisor`;
+Finalizar com: checkmark Resolve agora OU Planilha: [registrar] Prazo 3 dias uteis OU Aguardar 6h OU Escalar supervisor`;
 
 const histories = new Map();
 function getHistory(key) {
@@ -39,25 +39,27 @@ function addToHistory(key, role, content) {
   if (h.length > 40) h.splice(0, 2);
 }
 
-async function askClaude(key, text) {
+async function askGemini(key, text) {
   addToHistory(key, "user", text);
-  const res = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "x-api-key": process.env.ANTHROPIC_API_KEY,
-      "anthropic-version": "2023-06-01",
-    },
-    body: JSON.stringify({
-      model: "claude-sonnet-4-20250514",
-      max_tokens: 1000,
-      system: SYSTEM_PROMPT,
-      messages: getHistory(key),
-    }),
-  });
+  const history = getHistory(key);
+  const contents = history.map(m => ({
+    role: m.role === "assistant" ? "model" : "user",
+    parts: [{ text: m.content }],
+  }));
+  const res = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
+        contents,
+      }),
+    }
+  );
   const data = await res.json();
   if (data.error) throw new Error(data.error.message);
-  const reply = data.content?.[0]?.text || "Sem resposta.";
+  const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || "Sem resposta.";
   addToHistory(key, "assistant", reply);
   return reply;
 }
@@ -71,7 +73,7 @@ app.message(async ({ message, say, client }) => {
   if (!text) return;
   try {
     await client.reactions.add({ channel: message.channel, timestamp: message.ts, name: "hourglass_flowing_sand" });
-    const reply = await askClaude(key, text);
+    const reply = await askGemini(key, text);
     await say({ text: reply, thread_ts: message.thread_ts || message.ts });
     await client.reactions.remove({ channel: message.channel, timestamp: message.ts, name: "hourglass_flowing_sand" });
   } catch (err) {
@@ -85,7 +87,7 @@ app.event("message", async ({ event, client }) => {
   if (!text) return;
   try {
     await client.reactions.add({ channel: event.channel, timestamp: event.ts, name: "hourglass_flowing_sand" });
-    const reply = await askClaude(`dm_${event.channel}`, text);
+    const reply = await askGemini(`dm_${event.channel}`, text);
     await client.chat.postMessage({ channel: event.channel, text: reply });
     await client.reactions.remove({ channel: event.channel, timestamp: event.ts, name: "hourglass_flowing_sand" });
   } catch (err) {
@@ -93,4 +95,4 @@ app.event("message", async ({ event, client }) => {
   }
 });
 
-(async () => { await app.start(); console.log("Bot Conexa rodando!"); })();
+(async () => { await app.start(); console.log("Bot Conexa rodando com Gemini!"); })();
