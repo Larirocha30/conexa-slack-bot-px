@@ -30,6 +30,90 @@ REGRAS NOTURNAS (22h-7h):
 
 FORMATO: resposta direta e natural. Informe ao atendente o que deve fazer ou responder. Sem rotulos ou tags.
 
+---
+
+FAQ INTERNO DA CONEXA SAUDE (use estas informações para embasar suas respostas):
+
+## CANAIS DE CONTATO
+
+**PX:**
+- Zenklub: profissionais@zenklub.com; premium@zenklub.com ou chat
+- Conexa Saúde Mental e Saúde Física: +55 (21) 96696-4821 [Sala de atendimento]
+- Conexa Saúde Mental: equipecs@psicologiaviva.com.br ou chat
+- Conexa Saúde Física: +55 (11) 91474-4607 [Clari Pro]
+
+**CX:**
+- Zenklub Empresas: corporativo@zenklub.com
+- Zenklub Clientes: +55 (21) 99186-0605 [Clari]
+- Conexa Clientes: +55 (11) 97639-6153 [Clari]
+
+**Outros números (WhatsApp):**
+- Conexa AI: +55 (11) 91726-1618
+- Números de notificações: +55 (21) 99712-3519 / +55 (21) 99625-5086
+- Hospital Conexa: +55 (11) 93054-4580
+- Contato Insider (CRM): +1 (555) 842-9326
+- Relacionamento médico: +55 (21) 96813-3472
+- ATENÇÃO: Número antigo de suporte aos médicos (NÃO USAR): +55 (11) 93210-9249
+
+---
+
+## COMO AGENDAR PACIENTE
+
+Em algumas situações será necessário agendar o paciente do zero. Passos:
+1. Acessar o Backoffice e clicar em "Atendimento"
+2. Selecionar "Agendar Consulta"
+3. Selecionar a clínica do paciente, o CPF ou o nome completo
+4. Após preencher todos os dados, clicar em "Buscar"
+5. Acessar a agenda do profissional e escolher o horário de acordo com a solicitação
+   - Obs.: se for NIP ou encaixe e não houver data próxima, entrar em contato com o curador
+6. Ao selecionar o horário, confirmar o agendamento clicando em "Sim, confirmar"
+7. Após a confirmação, o paciente receberá uma notificação no e-mail sobre o agendamento
+
+---
+
+## BLOQUEIO DE AGENDA
+
+- Planilha: Pedido de Alteração - Agenda Especialistas (SharePoint)
+- E-mail Profissionais: Caixa de Entrada (profissionais@conexasaude.com.br)
+- Backoffice: Usuário > Profissional (backoffice.conexasaude.com.br/usuario)
+- ADMIN: Buscar pela clínica em que o profissional está cadastrado
+- Existe também a opção de Bloqueio de agenda por tempo indeterminado (passo a passo disponível no FAQ interno)
+
+---
+
+## COMO FAZER UM ATIVO COM O PROFISSIONAL (via RD Conversas/Tallos)
+
+1. Acessar o RD Conversas (https://app.tallos.com.br/app/chat/queue_wait)
+2. Ir em "Contatos e Mensagens" > "Contatos"
+3. Buscar pelo nome do profissional
+4. Localizado o contato, clicar no ícone do bolãozinho para enviar um ativo
+5. Na nova tela, clicar em "Iniciar" na parte superior
+6. Selecionar o setor "Acolhimento" e clicar em "Iniciar Atendimento"
+7. Irá aparecer um pop-up para enviar um template (não é possível mensagem personalizada de cara)
+8. Clicar em "Enviar Template" e selecionar o template
+9. Após enviar, clicar em "Atividades" na parte superior
+10. Nos campos à direita, selecionar "Descrição" — se a demanda veio do Zendesk, inserir o número do ticket; se não, escrever um breve resumo
+11. Selecionar "Tornar pública" e clicar em "Cadastrar Atividade"
+12. Quando o profissional retornar o contato, seguir com a devida tratativa
+
+---
+
+## REENVIO DE DOCUMENTOS
+
+1. Ir no BKO (Backoffice)
+2. No menu lateral esquerdo, clicar em "Usuários" > "Pacientes"
+3. Buscar o nome, CPF ou e-mail do paciente
+4. Localizado o paciente, clicar nos 3 pontinhos e ir em "Gerar link mágico"
+5. Copiar o link e colar em outra janela do navegador (para entrar no login do paciente)
+6. Ir em "Consultas" > "Realizadas"
+7. Localizar a consulta e clicar nela > "Anexos" > "Anexos do profissional"
+8. ATENÇÃO: O status da consulta precisa estar "Concluído" — significa que o profissional preencheu o prontuário. Se estiver pendente, acionar o profissional via RD Conversas (Tallos) solicitando o envio
+9. Se for feito contato ativo e o profissional retornar, copiar a demanda solicitada via ticket de CX
+10. No ticket do Zendesk, responder ao paciente informando que foi solicitado o reenvio dos documentos
+11. Deixar ticket com status "Em Espera" (aguardando retorno do profissional)
+
+---
+
 Desenvolvida por Larissa Rocha e Maria Oliveira — Conexa Saude, 2026.`;
 
 const BOAS_VINDAS = `Oi! Eu sou a Luna 🌙
@@ -81,6 +165,26 @@ function addToHistory(key, role, content) {
   if (h.length > 40) h.splice(0, 2);
 }
 
+async function addReaction(client, channel, timestamp, name) {
+  try {
+    await client.reactions.add({ channel, timestamp, name });
+  } catch (err) {
+    if (err.data?.error !== "already_reacted") {
+      console.error("Erro ao adicionar reação:", err.message);
+    }
+  }
+}
+
+async function removeReaction(client, channel, timestamp, name) {
+  try {
+    await client.reactions.remove({ channel, timestamp, name });
+  } catch (err) {
+    if (err.data?.error !== "no_reaction") {
+      console.error("Erro ao remover reação:", err.message);
+    }
+  }
+}
+
 async function askGroq(key, text) {
   const faqContent = await searchFAQ(text);
   const userMessage = faqContent
@@ -116,10 +220,10 @@ app.message(async ({ message, say, client }) => {
   const text = (message.text || "").replace(/<@[A-Z0-9]+>/g, "").trim();
   if (!text) return;
   try {
-    await client.reactions.add({ channel: message.channel, timestamp: message.ts, name: "hourglass_flowing_sand" });
+    await addReaction(client, message.channel, message.ts, "hourglass_flowing_sand");
     const reply = await askGroq(key, text);
     await say({ text: reply, thread_ts: message.thread_ts || message.ts });
-    await client.reactions.remove({ channel: message.channel, timestamp: message.ts, name: "hourglass_flowing_sand" });
+    await removeReaction(client, message.channel, message.ts, "hourglass_flowing_sand");
   } catch (err) {
     await say({ text: `Erro: ${err.message}`, thread_ts: message.thread_ts || message.ts });
   }
@@ -137,10 +241,10 @@ app.event("message", async ({ event, client }) => {
         text: BOAS_VINDAS,
       });
     }
-    await client.reactions.add({ channel: event.channel, timestamp: event.ts, name: "hourglass_flowing_sand" });
+    await addReaction(client, event.channel, event.ts, "hourglass_flowing_sand");
     const reply = await askGroq(`dm_${event.channel}`, text);
     await client.chat.postMessage({ channel: event.channel, text: reply });
-    await client.reactions.remove({ channel: event.channel, timestamp: event.ts, name: "hourglass_flowing_sand" });
+    await removeReaction(client, event.channel, event.ts, "hourglass_flowing_sand");
   } catch (err) {
     await client.chat.postMessage({ channel: event.channel, text: `Erro: ${err.message}` });
   }
