@@ -57,6 +57,35 @@ FAQ INTERNO DA CONEXA SAUDE (use estas informações para embasar suas respostas
 
 ---
 
+## HOSPITAL PÚRPURA | LISTAGEM DE PSIQUIATRAS
+
+Psiquiatras disponíveis (em ordem alfabética):
+- Fernanda Moraes
+- Livia Rodarte
+- Marcela Amancio
+- Marcelo Takizawa
+- Matheus Cardoso Murta Botelho
+- Nayara Urtiga
+- Rodrigo Pazeto
+- Sidney Seabra
+- Vinicius Frederico
+- Vitto Carlo Silva
+
+---
+
+## NIP (Notificação de Intermediação Preliminar)
+
+NIP é um sistema da ANS para resolver conflitos entre consumidores e operadoras de planos de saúde de forma extrajudicial.
+
+ATENÇÃO: Para casos de NIP, como há prazo a cumprir, podemos contatar o curador da especialidade via WhatsApp empresarial, pedindo que direcione um profissional disponível considerando a data limite.
+
+Sugestão de macro de abordagem para o curador:
+"Dra. [NOME], me chamo [NOME], sou analista do time de Experiência do Profissional Conexa e estou entrando em contato porque temos uma NIP que precisa ser solucionada até dd/mm/aaaa (colocar sempre o dia anterior ao prazo). Você poderia, por favor, verificar qual profissional da especialidade [citar especialidade] consegue assumir essa demanda? Seu retorno é essencial para garantirmos o melhor desfecho possível. Muito obrigado desde já! Ficamos no seu aguardo."
+
+Importante: sempre deixar uma nota com print do contato feito via WhatsApp para que outro analista possa acompanhar.
+
+---
+
 ## COMO AGENDAR PACIENTE
 
 Em algumas situações será necessário agendar o paciente do zero. Passos:
@@ -67,17 +96,48 @@ Em algumas situações será necessário agendar o paciente do zero. Passos:
 5. Acessar a agenda do profissional e escolher o horário de acordo com a solicitação
    - Obs.: se for NIP ou encaixe e não houver data próxima, entrar em contato com o curador
 6. Ao selecionar o horário, confirmar o agendamento clicando em "Sim, confirmar"
-7. Após a confirmação, o paciente receberá uma notificação no e-mail sobre o agendamento
+7. Após a confirmação, o paciente receberá notificação por e-mail
 
 ---
 
 ## BLOQUEIO DE AGENDA
 
 - Planilha: Pedido de Alteração - Agenda Especialistas (SharePoint)
-- E-mail Profissionais: Caixa de Entrada (profissionais@conexasaude.com.br)
+- E-mail Profissionais: profissionais@conexasaude.com.br
 - Backoffice: Usuário > Profissional (backoffice.conexasaude.com.br/usuario)
 - ADMIN: Buscar pela clínica em que o profissional está cadastrado
-- Existe também a opção de Bloqueio de agenda por tempo indeterminado (passo a passo disponível no FAQ interno)
+
+## BLOQUEIO DE AGENDA POR TEMPO INDETERMINADO
+
+Quando o profissional solicitar bloqueio sem data de retorno:
+1. Conferir a clínica do profissional no Backoffice
+2. Ir ao Admin (app.conexasaude.com.br/login) e buscar o profissional
+3. Ao encontrar a clínica, acessar a conta e pesquisar o profissional em "Usuários"
+4. Clicar nos 3 pontos ao lado do nome do profissional
+5. Clicar em "Horários"
+6. Clicar no ícone da lixeira para excluir a programação de agenda
+ATENÇÃO: conferir se há pacientes agendados para realizar o cancelamento das consultas antes de bloquear.
+
+---
+
+## INSERIR PACIENTE NA FILA (Plantonistas e Médicos de Rotina)
+
+Quando um profissional plantonista solicitar inserção de paciente na fila de pronto atendimento:
+1. Acessar o Backoffice > "Atendimento" > "Fila de atendimento"
+2. Clicar em "Inserir atendimento"
+3. Preencher os campos necessários
+4. Caso o médico de rotina ou profissional peça para inserir na fila dele, incluir o nome do profissional no campo "Nome do profissional"
+5. Clicar em "Inserir"
+6. Atualizar a fila e confirmar o paciente no atendimento PA
+
+---
+
+## RETIRAR PACIENTE DA FILA
+
+IMPORTANTE: usado apenas quando o paciente estiver preso na fila.
+1. Acessar o Backoffice > "Atendimento" > "Fila de atendimento"
+2. Pesquisar pelo nome do paciente informado pelo profissional
+3. Ao localizar, clicar nos 3 pontos e em "Remover da fila"
 
 ---
 
@@ -89,7 +149,7 @@ Em algumas situações será necessário agendar o paciente do zero. Passos:
 4. Localizado o contato, clicar no ícone do bolãozinho para enviar um ativo
 5. Na nova tela, clicar em "Iniciar" na parte superior
 6. Selecionar o setor "Acolhimento" e clicar em "Iniciar Atendimento"
-7. Irá aparecer um pop-up para enviar um template (não é possível mensagem personalizada de cara)
+7. Irá aparecer um pop-up para enviar um template (não é possível mensagem personalizada de imediato)
 8. Clicar em "Enviar Template" e selecionar o template
 9. Após enviar, clicar em "Atividades" na parte superior
 10. Nos campos à direita, selecionar "Descrição" — se a demanda veio do Zendesk, inserir o número do ticket; se não, escrever um breve resumo
@@ -98,19 +158,134 @@ Em algumas situações será necessário agendar o paciente do zero. Passos:
 
 ---
 
+## COMO FAZER UM ATIVO COM O PROFISSIONAL (via Piece of Cake)
+
+Processo similar ao RD Conversas, porém utilizando a plataforma Piece of Cake Conversas.
+
+---
+
 ## REENVIO DE DOCUMENTOS
 
 1. Ir no BKO (Backoffice)
-2. No menu lateral esquerdo, clicar em "Usuários" > "Pacientes"
+2. Menu lateral > "Usuários" > "Pacientes"
 3. Buscar o nome, CPF ou e-mail do paciente
-4. Localizado o paciente, clicar nos 3 pontinhos e ir em "Gerar link mágico"
+4. Clicar nos 3 pontinhos > "Gerar link mágico"
 5. Copiar o link e colar em outra janela do navegador (para entrar no login do paciente)
 6. Ir em "Consultas" > "Realizadas"
-7. Localizar a consulta e clicar nela > "Anexos" > "Anexos do profissional"
-8. ATENÇÃO: O status da consulta precisa estar "Concluído" — significa que o profissional preencheu o prontuário. Se estiver pendente, acionar o profissional via RD Conversas (Tallos) solicitando o envio
-9. Se for feito contato ativo e o profissional retornar, copiar a demanda solicitada via ticket de CX
-10. No ticket do Zendesk, responder ao paciente informando que foi solicitado o reenvio dos documentos
+7. Localizar a consulta > "Anexos" > "Anexos do profissional"
+8. ATENÇÃO: O status da consulta precisa estar "Concluído". Se estiver pendente, acionar o profissional via RD Conversas (Tallos)
+9. Se o profissional retornar, copiar a demanda solicitada via ticket de CX
+10. No Zendesk, responder ao paciente informando que foi solicitado o reenvio dos documentos
 11. Deixar ticket com status "Em Espera" (aguardando retorno do profissional)
+
+---
+
+## TROCA DE DECLARAÇÃO PARA ATESTADO
+
+Não é possível fazer essa troca, pois o profissional que atendeu avaliou e julgou não necessário o afastamento.
+
+Macro de resposta ao paciente:
+"Olá, [Nome do Paciente], esperamos que esteja bem! Em resposta à sua solicitação, informamos que o profissional responsável emitiu uma declaração de comparecimento, documento que comprova sua presença na consulta em [data]. Esclarecemos que, conforme as diretrizes do CRM, a emissão de atestado médico está condicionada à avaliação clínica do profissional, que julga, com base em critérios técnicos e éticos, a necessidade ou não de afastamento das atividades. Dessa forma, a decisão de emitir apenas a declaração de comparecimento foi uma conduta médica. Seguimos à disposição. Atenciosamente."
+
+---
+
+## CORREÇÃO DE INFORMAÇÃO EM PEDIDO MÉDICO, DECLARAÇÃO, ATESTADO, RELATÓRIO OU LAUDO
+
+1. Ir no BKO > "Usuários" > "Pacientes"
+2. Buscar o paciente e gerar link mágico
+3. Ir em "Consultas" > "Realizadas" > localizar a consulta > "Anexos" > "Anexos do profissional"
+4. Status da consulta precisa estar "Concluído". Se pendente, acionar profissional via RD Conversas (Tallos)
+5. Se houver correção a ser feita, seguir com o processo de contato com o profissional
+
+---
+
+## COMO FUNCIONA O BÔNUS DE PROFISSIONAIS
+
+Bônus por performance:
+- 70% ou mais dos atendimentos válidos: +15% sobre o valor total
+- 80% ou mais dos atendimentos válidos: +20% sobre o valor total
+
+Exemplo: profissional com 10h de agenda = R$1.200. Se 80% das consultas forem válidas (paciente compareceu, sem no-show): R$1.200 + 20% = R$1.440,00
+
+Se o profissional não concordar ou alegar não recebimento: é necessário abrir uma contestação.
+
+---
+
+## IMPOSTO DE RENDA
+
+- CENÁRIO 1 - Profissionais PF: os pagamentos de 2025 não sofreram retenções na fonte (IRRF, CSRF ou ISS). Conforme IN RFB nº 2060/2021, a empresa está desobrigada da emissão do Comprovante de Rendimentos.
+- CENÁRIO 2 - Profissionais PJ sem retenção: o informe de rendimentos pode ser solicitado em adm.pessoal@conexasaude.com.br informando nome e CPF.
+- CENÁRIO 3 - Profissionais PJ com retenção: têm direito à declaração. Consultar os arquivos disponíveis no Notion (Comprovante Anual de Retenção IRRF/CSRF).
+
+---
+
+## CADASTRO DE NOVO PROFISSIONAL (Pipefy)
+
+Sempre que um novo profissional for contratado (exceto corpo clínico de Psicologia Conexa), o time de Relacionamento Médico envia os dados cadastrais e bancários para cadastro no Pipefy.
+
+IMPORTANTE: antes de iniciar, conferir se o profissional está ativo no BKO. Se não estiver, sinalizar o time de Relacionamento Médico antes de dar retorno ao profissional. Confirmar também se o profissional já está no Database.
+
+Passos:
+1. Identificar a solicitação na Caixa de Entrada da pipe de Portal do Profissional
+2. Ao clicar no card, identificar os dados preenchidos pelo profissional
+3. No Database, clicar em "Criar novo cadastro" e incluir os dados com atenção (dados cruciais para o repasse)
+4. Após preenchimento, clicar em "Criar novo cadastro" e atualizar a página
+5. Ainda no card, clicar no ícone do e-mail > "Compor e-mail" > responder e clicar em "Enviar"
+6. Concluir o card
+7. Incluir o profissional na planilha de envio de convites do Pipefy (aba envio de convites Pipefy)
+
+SLA: 5 dias úteis. Solicitações até o dia 20 de cada mês → 1ª janela de pagamento do mês seguinte. Após o dia 20 → 2ª ou 3ª janela.
+
+---
+
+## ATUALIZAÇÃO DE DADOS BANCÁRIOS (Pipefy)
+
+Usada para profissionais já cadastrados que precisam atualizar dados bancários ou informações fiscais (CNPJ, Simples Nacional etc).
+
+IMPORTANTE: conferir se o profissional está ativo no BKO. Se não estiver, sinalizar Relacionamento Médico. Se o profissional não estiver no Database, seguir o processo de Cadastro de Novo Profissional.
+
+Passos:
+1. Identificar a solicitação na Caixa de Entrada da pipe de Portal do Profissional
+2. Consultar o profissional no Database
+3. Se não estiver cadastrado, seguir processo de Cadastro de Novo Profissional
+4. Se estiver, editar os dados conforme informações do card
+5. Após atualização, conferir informações e atualizar a página
+6. No card, clicar em ícone do e-mail > "Compor e-mail" > responder e enviar
+7. Concluir o card
+8. Incluir na planilha de envio de convites do Pipefy se ainda não tiver card de pagamento
+
+SLA: 5 dias úteis. Mesmo critério de janelas de pagamento (dia 20 de cada mês).
+
+---
+
+## ENVIO DE CONVITE (Pipefy)
+
+Quando um novo profissional passa a integrar o corpo clínico, o time de Relacionamento Médico encaminha uma listagem ao time Financeiro (com nome, e-mail, CNPJ e especialidade), que realiza o envio dos convites de acesso ao Pipefy.
+
+Se o profissional não receber o convite, sinalizar o time Financeiro para reenvio.
+
+ATENÇÃO: SLA do time Financeiro é de 3 dias úteis após inclusão na planilha.
+
+---
+
+## FLUXO DE PAGAMENTO
+
+Para atuar na Conexa, o profissional precisa ter CNPJ. O Pipefy é a plataforma de gestão dos pagamentos.
+
+EXCEÇÃO: apenas nutricionistas e fonoaudiólogos podem iniciar atendimentos como Pessoa Física.
+
+---
+
+## GLOSSÁRIO / INFORMAÇÕES IMPORTANTES
+
+- Laudo: documento com mais especificações clínicas sobre o paciente (mais detalhado)
+- Relatório: documento genérico e menos detalhado
+- NIP: Notificação de Intermediação Preliminar (sistema ANS para resolver conflitos extrajudicialmente)
+- BKO / Backoffice: sistema interno de gestão da Conexa (backoffice.conexasaude.com.br)
+- Admin: sistema de administração (app.conexasaude.com.br/login)
+- Pipefy: plataforma de gestão de pagamentos dos profissionais
+- RD Conversas / Tallos: plataforma de atendimento ativo aos profissionais (app.tallos.com.br)
+- No-show: quando o paciente não comparece à consulta
 
 ---
 
