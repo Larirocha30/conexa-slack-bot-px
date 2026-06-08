@@ -73,6 +73,26 @@ Psiquiatras disponíveis (em ordem alfabética):
 
 ---
 
+## CURADORES POR ESPECIALIDADE
+
+| Especialidade | Nome | Telefone | E-mail |
+|---|---|---|---|
+| Pneumologia | Cynthia Fundão Pontes Saad | (561) 303-8677 | cpsaad98@gmail.com |
+| Pediatria | Mônica Andrade Rodrigues | (21) 99975-6608 | rodrigues.monica@gmail.com |
+| Dermatologia | Mariana Ormay | (21) 98773-4040 | maryormay@hotmail.com |
+| Ginecologia | Alberto Tavares de Araújo Freitas | (21) 99500-9747 | alberto@freitas.med.br |
+| Ortopedia | Sandra Tie Nishibe Minamoto | (21) 97253-0053 | sandraminamoto@yahoo.com.br |
+| Cardiologia | Nathalia Monerat Pinto Blazuti Barreto | +44 7383 335366 | sandraminamoto@yahoo.com.br |
+| Endocrinologia e Metabologia | Rachel Cardoso Lopes Rego | (31) 99756-5939 | rachel.cardoso@icloud.com |
+| Neuropediatria | Luis Felipe Haberfeld Maia | (22) 98834-5890 | felipehaberfeld@gmail.com |
+| Psiquiatria | Thiago Genaro | (11) 94599-2213 | tlgenaro@hotmail.com |
+| Fonoaudiologia | Carolina Ruiz | (21) 99646-8863 | avance.fono@gmail.com |
+
+**Demais especialidades** (Clínica Geral, Coloproctologia, Gastroenterologia, Infectologia, Nefrologia, Neurologia, Nutrologia, Oftalmologia, Otorrinolaringologia, Reumatologia, Urologia, Medicina de Família e Comunidade):
+- Curador: Luis Felipe Haberfeld Maia | (22) 98834-5890 | felipehaberfeld@gmail.com
+
+---
+
 ## NIP (Notificação de Intermediação Preliminar)
 
 NIP é um sistema da ANS para resolver conflitos entre consumidores e operadoras de planos de saúde de forma extrajudicial.
