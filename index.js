@@ -383,30 +383,27 @@ async function removeReaction(client, channel, timestamp, name) {
 async function askGroq(key, text) {
   const faqContent = await searchFAQ(text);
   const userMessage = faqContent
-    ? `PERGUNTA DO ATENDENTE: ${text}\n\nINFORMA\u00c7\u00d5ES DO FAQ OFICIAL:\n${faqContent}`
+    ? `PERGUNTA DO ATENDENTE: ${text}\n\nINFORMAÇÕES DO FAQ OFICIAL:\n${faqContent}`
     : text;
   addToHistory(key, "user", userMessage);
-
-  const history = getHistory(key);
-  const contents = history.map(m => ({
-    role: m.role === "assistant" ? "model" : "user",
-    parts: [{ text: m.content }],
-  }));
-
-  const res = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
-        contents,
-      }),
-    }
-  );
+  const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${process.env.GROQ_API_KEY}`,
+    },
+    body: JSON.stringify({
+      model: "llama-3.1-8b-instant",
+      messages: [
+        { role: "system", content: SYSTEM_PROMPT },
+        ...getHistory(key),
+      ],
+      max_tokens: 512,
+    }),
+  });
   const data = await res.json();
   if (data.error) throw new Error(data.error.message);
-  const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || "Sem resposta.";
+  const reply = data.choices?.[0]?.message?.content || "Sem resposta.";
   addToHistory(key, "assistant", reply);
   return reply;
 }
