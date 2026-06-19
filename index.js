@@ -407,45 +407,31 @@ async function askGroq(key, text) {
   return reply;
 }
 
-// Mensagens no canal — ignora respostas dentro de thread
-app.message(async ({ message, say, client }) => {
+// Handler único para canais e DMs — evita duplicação de respostas
+app.message(async ({ message, client }) => {
   if (message.subtype || message.bot_id) return;
   if (message.thread_ts && message.thread_ts !== message.ts) return; // ignora thread
 
-  const key = `${message.channel}_${message.ts}`;
+  const isDM = message.channel_type === "im";
   const text = (message.text || "").replace(/<@[A-Z0-9]+>/g, "").trim();
   if (!text) return;
+
+  // Boas-vindas na primeira mensagem de DM
+  if (isDM && !boasVindasEnviadas.has(message.channel)) {
+    boasVindasEnviadas.add(message.channel);
+    await client.chat.postMessage({ channel: message.channel, text: BOAS_VINDAS });
+    return; // não responde a pergunta junto com as boas-vindas
+  }
+
+  const key = isDM ? `dm_${message.channel}` : `${message.channel}_${message.ts}`;
 
   try {
     await addReaction(client, message.channel, message.ts, "hourglass_flowing_sand");
     const reply = await askGroq(key, text);
-    await say({ text: reply }); // responde solta no canal, sem thread_ts
+    await client.chat.postMessage({ channel: message.channel, text: reply });
     await removeReaction(client, message.channel, message.ts, "hourglass_flowing_sand");
   } catch (err) {
-    await say({ text: `Erro: ${err.message}` });
-  }
-});
-
-// DMs
-app.event("message", async ({ event, client }) => {
-  if (event.channel_type !== "im" || event.subtype || event.bot_id) return;
-  const text = (event.text || "").trim();
-  if (!text) return;
-
-  try {
-    if (!boasVindasEnviadas.has(event.channel)) {
-      boasVindasEnviadas.add(event.channel);
-      await client.chat.postMessage({
-        channel: event.channel,
-        text: BOAS_VINDAS,
-      });
-    }
-    await addReaction(client, event.channel, event.ts, "hourglass_flowing_sand");
-    const reply = await askGroq(`dm_${event.channel}`, text);
-    await client.chat.postMessage({ channel: event.channel, text: reply });
-    await removeReaction(client, event.channel, event.ts, "hourglass_flowing_sand");
-  } catch (err) {
-    await client.chat.postMessage({ channel: event.channel, text: `Erro: ${err.message}` });
+    await client.chat.postMessage({ channel: message.channel, text: `Erro: ${err.message}` });
   }
 });
 
