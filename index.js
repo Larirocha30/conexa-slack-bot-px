@@ -340,7 +340,7 @@ async function searchFAQ(query) {
         .replace(/<[^>]+>/g, " ")
         .replace(/\s+/g, " ")
         .trim()
-        .slice(0, 800);
+        .slice(0, 400); // reduzido de 800 para 400
       return `ARTIGO: ${article.title}\n${body}`;
     }).join("\n\n---\n\n");
   } catch (err) {
@@ -357,7 +357,7 @@ function getHistory(key) {
 function addToHistory(key, role, content) {
   const h = getHistory(key);
   h.push({ role, content });
-  if (h.length > 40) h.splice(0, 2);
+  if (h.length > 6) h.splice(0, 2); // máx 3 trocas de conversa
 }
 
 async function addReaction(client, channel, timestamp, name) {
@@ -407,27 +407,31 @@ async function askGroq(key, text) {
   return reply;
 }
 
+// Mensagens no canal — ignora respostas dentro de thread
 app.message(async ({ message, say, client }) => {
   if (message.subtype || message.bot_id) return;
-  const key = message.thread_ts
-    ? `${message.channel}_${message.thread_ts}`
-    : `${message.channel}_${message.ts}`;
+  if (message.thread_ts && message.thread_ts !== message.ts) return; // ignora thread
+
+  const key = `${message.channel}_${message.ts}`;
   const text = (message.text || "").replace(/<@[A-Z0-9]+>/g, "").trim();
   if (!text) return;
+
   try {
     await addReaction(client, message.channel, message.ts, "hourglass_flowing_sand");
     const reply = await askGroq(key, text);
-    await say({ text: reply, thread_ts: message.thread_ts || message.ts });
+    await say({ text: reply }); // responde solta no canal, sem thread_ts
     await removeReaction(client, message.channel, message.ts, "hourglass_flowing_sand");
   } catch (err) {
-    await say({ text: `Erro: ${err.message}`, thread_ts: message.thread_ts || message.ts });
+    await say({ text: `Erro: ${err.message}` });
   }
 });
 
+// DMs
 app.event("message", async ({ event, client }) => {
   if (event.channel_type !== "im" || event.subtype || event.bot_id) return;
   const text = (event.text || "").trim();
   if (!text) return;
+
   try {
     if (!boasVindasEnviadas.has(event.channel)) {
       boasVindasEnviadas.add(event.channel);
@@ -445,7 +449,7 @@ app.event("message", async ({ event, client }) => {
   }
 });
 
-// Servidor HTTP para o Render nao derrubar o servico
+// Servidor HTTP para o Render não derrubar o serviço
 http.createServer((req, res) => res.end("Luna online!")).listen(process.env.PORT || 3000);
 
 (async () => {
