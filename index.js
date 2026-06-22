@@ -58,7 +58,7 @@ async function searchFAQ(query) {
         .replace(/<[^>]+>/g, " ")
         .replace(/\s+/g, " ")
         .trim()
-        .slice(0, 400); // reduzido de 800 para 400
+        .slice(0, 400);
       return `ARTIGO: ${article.title}\n${body}`;
     }).join("\n\n---\n\n");
   } catch (err) {
@@ -75,7 +75,7 @@ function getHistory(key) {
 function addToHistory(key, role, content) {
   const h = getHistory(key);
   h.push({ role, content });
-  if (h.length > 6) h.splice(0, 2); // máx 3 trocas de conversa
+  if (h.length > 6) h.splice(0, 2);
 }
 
 async function addReaction(client, channel, timestamp, name) {
@@ -126,20 +126,18 @@ async function askGroq(key, text) {
   return reply;
 }
 
-// Handler único para canais e DMs — evita duplicação de respostas
 app.message(async ({ message, client }) => {
   if (message.subtype || message.bot_id) return;
-  if (message.thread_ts && message.thread_ts !== message.ts) return; // ignora thread
+  if (message.thread_ts && message.thread_ts !== message.ts) return;
 
   const isDM = message.channel_type === "im";
   const text = (message.text || "").replace(/<@[A-Z0-9]+>/g, "").trim();
   if (!text) return;
 
-  // Boas-vindas na primeira mensagem de DM
   if (isDM && !boasVindasEnviadas.has(message.channel)) {
     boasVindasEnviadas.add(message.channel);
     await client.chat.postMessage({ channel: message.channel, text: BOAS_VINDAS });
-    return; // não responde a pergunta junto com as boas-vindas
+    return;
   }
 
   const key = isDM ? `dm_${message.channel}` : `${message.channel}_${message.ts}`;
@@ -154,7 +152,14 @@ app.message(async ({ message, client }) => {
   }
 });
 
-// Servidor HTTP para o Render não derrubar o serviço
+process.on("uncaughtException", (err) => {
+  console.error("Uncaught Exception:", err.message);
+});
+
+process.on("unhandledRejection", (reason) => {
+  console.error("Unhandled Rejection:", reason);
+});
+
 http.createServer((req, res) => res.end("Luna online!")).listen(process.env.PORT || 3000);
 
 (async () => {
