@@ -207,26 +207,41 @@ async function askGroq(key, text) {
     ? `PERGUNTA DO ATENDENTE: ${text}\n\nINFORMAÇÕES DO FAQ OFICIAL:\n${faqContent}`
     : text;
   addToHistory(key, "user", userMessage);
-  const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${process.env.GROQ_API_KEY}`,
-    },
-    body: JSON.stringify({
-      model: "llama-3.1-8b-instant",
-      messages: [
-        { role: "system", content: SYSTEM_PROMPT },
-        ...getHistory(key),
-      ],
-      max_tokens: 512,
-    }),
-  });
-  const data = await res.json();
-  if (data.error) throw new Error(data.error.message);
-  const reply = data.choices?.[0]?.message?.content || "Sem resposta.";
-  addToHistory(key, "assistant", reply);
-  return reply;
+
+  const maxTentativas = 3;
+  for (let tentativa = 1; tentativa <= maxTentativas; tentativa++) {
+    const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${process.env.GROQ_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: "llama-3.3-70b-versatile",
+        messages: [
+          { role: "system", content: SYSTEM_PROMPT },
+          ...getHistory(key),
+        ],
+        max_tokens: 512,
+      }),
+    });
+
+    // Rate limit (429): espera o tempo sugerido e tenta de novo
+    if (res.status === 429 && tentativa < maxTentativas) {
+      const retryAfter = parseFloat(res.headers.get("retry-after")) || 5;
+      console.log(`Rate limit atingido. Aguardando ${retryAfter}s (tentativa ${tentativa})`);
+      await new Promise(r => setTimeout(r, (retryAfter + 0.5) * 1000));
+      continue;
+    }
+
+    const data = await res.json();
+    if (data.error) throw new Error(data.error.message);
+    const reply = data.choices?.[0]?.message?.content || "Sem resposta.";
+    addToHistory(key, "assistant", reply);
+    return reply;
+  }
+
+  throw new Error("Não consegui responder após várias tentativas. Tente novamente em instantes.");
 }
 
 app.message(async ({ message, client }) => {
