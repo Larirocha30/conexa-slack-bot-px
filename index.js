@@ -263,6 +263,13 @@ app.message(async ({ message, client }) => {
 
   try {
     await addReaction(client, message.channel, message.ts, "hourglass_flowing_sand");
+
+    // Mensagem de espera
+    await client.chat.postMessage({
+      channel: message.channel,
+      text: "Oi! Já já te respondo, só um segundinho enquanto busco tudo certinho pra você! 🩷"
+    });
+
     const reply = await askGroq(key, text);
     await client.chat.postMessage({ channel: message.channel, text: reply });
     await removeReaction(client, message.channel, message.ts, "hourglass_flowing_sand");
