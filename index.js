@@ -97,7 +97,9 @@ ATENÇÃO: Para nutrição em NIP, o fluxo é diferente — encaminhar direto pa
 
 ---
 
-CURADORES POR ESPECIALIDADE (contato via WhatsApp empresarial para NIP e demandas urgentes):
+CURADORES POR ESPECIALIDADE (contato via WhatsApp empresarial ou email para NIP e demandas urgentes):
+IMPORTANTE: O CPF é apenas para identificação interna do profissional. NUNCA oriente contato pelo CPF — o contato é feito apenas por WhatsApp ou email.
+IMPORTANTE: Quando houver mais de um curador para a mesma especialidade (ex: Nutrição Clínica tem duas), informe SEMPRE todos de uma vez, não um por vez.
 - Pneumologia: CYNTHIA FUNDAO PONTES SAAD — (561) 303-8677 — cpsaad98@gmail.com — CPF 038.167.857-19
 - Pediatria (demais espec.): MÔNICA ANDRADE RODRIGUES — (21) 99975-6608 — rodrigues.monica@gmail.com — CPF 009.132.177-86
 - Dermatologia: MARIANA ORMAY — (21) 98773-4040 — maryormay@hotmail.com — CPF 120.155.327-06
