@@ -108,6 +108,8 @@ CURADORES POR ESPECIALIDADE (contato via WhatsApp empresarial para NIP e demanda
 - Neuropediatria: LUIS FELIPE HABERFELD MAIA — (22) 988345890 — felipehaberfeld@gmail.com — CPF 113.874.397-66
 - Psiquiatria: THIAGO GENARO — (11) 945992213 — tlgenaro@hotmail.com — CPF 307.089.518-21
 - Fonoaudiologia: CAROLINA RUIZ — (21) 996468863 — avance.fono@gmail.com — CPF 073.418.407-73
+- Nutrição Clínica: DANIELLE TOLEDO — (21) 99379-9154 — danielle.toledo@hotmail.com — CPF 090.320.417-70
+- Nutrição Clínica: SARA SINGER — (21) 98806-9935 — personalnutri@gmail.com — CPF 025.987.937-14
 - Demais especialidades (Clínica Geral, Coloproctologia, Gastroenterologia, Infectologia, Nefrologia, Neurologia, Nutrologia, Oftalmologia, Otorrinolaringologia, Reumatologia, Urologia, Medicina de Família): LUIS FELIPE HABERFELD MAIA — (22) 98834-5890 — felipehaberfeld@gmail.com — CPF 113.874.397-66
 
 ---
