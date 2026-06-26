@@ -150,8 +150,6 @@ Posso ajudar com:
 
 Pode falar! 💙`;
 
-const boasVindasEnviadas = new Set();
-
 async function searchFAQ(query) {
   try {
     const url = `https://faq.conexasaude.com.br/api/v2/help_center/pt-br/articles/search.json?query=${encodeURIComponent(query)}&per_page=3`;
@@ -239,8 +237,9 @@ app.message(async ({ message, client }) => {
   const text = (message.text || "").replace(/<@[A-Z0-9]+>/g, "").trim();
   if (!text) return;
 
-  if (isDM && !boasVindasEnviadas.has(message.channel)) {
-    boasVindasEnviadas.add(message.channel);
+  // Boas-vindas apenas quando a mensagem for um cumprimento
+  const ehCumprimento = /^(oi|ol[áa]|opa|e a[íi]|eai|bom dia|boa tarde|boa noite|hey|hi|luna)[\s!,.?]*$/i.test(text);
+  if (isDM && ehCumprimento) {
     await client.chat.postMessage({ channel: message.channel, text: BOAS_VINDAS });
     return;
   }
