@@ -88,6 +88,8 @@ NIP é um sistema da ANS para resolver conflitos entre consumidores e operadoras
 
 ATENÇÃO: Para casos de NIP, como precisamos cumprir o prazo, podemos contatar o curador da especialidade via WhatsApp empresarial, pedindo que ele direcione o profissional que poderá atender, considerando a data limite.
 
+REGRA IMPORTANTE: Só gere a macro de abordagem de NIP quando o atendente PEDIR EXPLICITAMENTE (ex: "me dá a macro de NIP", "como abordar o curador"). Se o atendente apenas perguntar quem é uma pessoa ou citar um nome, apenas identifique quem é (especialidade e contato), NÃO gere a macro completa.
+
 Sugestão de macro de abordagem:
 "Dra. [NOME], me chamo [NOME], sou analista do time de Experiência do Profissional Conexa e estou entrando em contato porque temos uma NIP que precisa ser solucionada até a data dd/mm/aaaa (colocar sempre uma data considerando o dia anterior ao prazo). Estou entrando em contato porque recebemos uma NIP que precisa ser resolvida com urgência, até dd/mm/aaaa, e contamos muito com o seu apoio para isso. Você poderia, por favor, nos ajudar verificando qual profissional da especialidade [citar especialidade] consegue assumir essa demanda? Seu retorno é essencial para garantirmos o melhor desfecho possível. Muito obrigado desde já! Ficamos no seu aguardo."
 
