@@ -265,13 +265,20 @@ app.message(async ({ message, client }) => {
     await addReaction(client, message.channel, message.ts, "hourglass_flowing_sand");
 
     // Mensagem de espera
-    await client.chat.postMessage({
+    const waitingMsg = await client.chat.postMessage({
       channel: message.channel,
       text: "Oi! Já já te respondo, só um segundinho enquanto busco tudo certinho pra você! 🩷"
     });
 
     const reply = await askGroq(key, text);
-    await client.chat.postMessage({ channel: message.channel, text: reply });
+
+    // Edita a mensagem de espera com a resposta final
+    await client.chat.update({
+      channel: message.channel,
+      ts: waitingMsg.ts,
+      text: reply
+    });
+
     await removeReaction(client, message.channel, message.ts, "hourglass_flowing_sand");
   } catch (err) {
     await client.chat.postMessage({ channel: message.channel, text: `Erro: ${err.message}` });
